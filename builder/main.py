@@ -97,7 +97,9 @@ if "nobuild" in COMMAND_LINE_TARGETS:
 else:
     target_elf = env.BuildProgram()
     target_firm = env.ElfToBin(join("$BUILD_DIR", "${PROGNAME}"), target_elf)
-    if "zephyr" in frameworks and "mcuboot-image" in COMMAND_LINE_TARGETS:
+    upload_signed = "upload" in COMMAND_LINE_TARGETS and "jlink-signed" == board.get("upload.protocol")
+    print("**** upload_signed: %s" % upload_signed)
+    if "zephyr" in frameworks and ("mcuboot-image" in COMMAND_LINE_TARGETS or upload_signed):
         target_firm = env.MCUbootImage(
             join("$BUILD_DIR", "${PROGNAME}.mcuboot.bin"), target_firm)
     env.Depends(target_firm, "checkprogsize")
